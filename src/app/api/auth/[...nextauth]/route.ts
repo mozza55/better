@@ -1,5 +1,7 @@
-import NextAuth, { AuthOptions } from "next-auth";
+import NextAuth, { AuthOptions, NextAuthOptions } from "next-auth";
 import KakaoProvider from "next-auth/providers/kakao";
+import prisma from "@/lib/prisma";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -8,11 +10,7 @@ export const authOptions: AuthOptions = {
       clientSecret: process.env.KAKAO_CLIENT_SECRET!,
     }),
   ],
-  callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
-      return true;
-    },
-  },
+  adapter: PrismaAdapter(prisma),
 };
 
 const handler = NextAuth(authOptions);
