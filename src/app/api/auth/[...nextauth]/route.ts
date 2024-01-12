@@ -11,6 +11,9 @@ export const authOptions: AuthOptions = {
     }),
   ],
   adapter: PrismaAdapter(prisma),
+  pages: {
+    signIn: '/auth/signin',
+  },
 };
 
 const handler = NextAuth(authOptions);
