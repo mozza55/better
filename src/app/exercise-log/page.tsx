@@ -13,6 +13,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 dayjs.locale('ko');
 
 type Props = {
+  params: {
   date?: Date;
 };
 
@@ -27,7 +28,7 @@ const conditions = [
 const Page = (props: Props) => {
   const router = useRouter();
   const [form, setForm] = useState({
-    date: props.date || new Date(),
+    date: props.params.date || new Date(),
     condition: '',
     record: '',
   });
