@@ -2,7 +2,6 @@ import { NextAuthOptions } from 'next-auth';
 import KakaoProvider from 'next-auth/providers/kakao';
 import prisma from '@/lib/prisma';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import { AdapterUser } from 'next-auth/adapters';
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -28,7 +27,6 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         session.user.id = token.id;
       }
-      console.log('session', session);
       return session;
     },
   },
