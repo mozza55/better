@@ -9,12 +9,14 @@ import { produce } from 'immer';
 import { isEmpty } from '@/utils/commonUtils';
 import 'dayjs/locale/ko';
 import TextareaAutosize from 'react-textarea-autosize';
+import { useCreateExerciseLog } from '@/queries/exercise-log/mutations';
 
 dayjs.locale('ko');
 
 type Props = {
   params: {
-  date?: Date;
+    date?: Date;
+  };
 };
 
 const conditions = [
@@ -33,10 +35,20 @@ const Page = (props: Props) => {
     record: '',
   });
   const isValidForm = useMemo(() => form.date && !isEmpty(form.condition) && !isEmpty(form.record), [form]);
+  const { mutate: createExerciseLog, isLoading } = useCreateExerciseLog();
 
   const handleSaveClick = () => {
     if (isValidForm) {
-      // TODO: save data
+      createExerciseLog(
+        {
+          ...form,
+        },
+        {
+          onSuccess: () => {
+            router.push('/');
+          },
+        },
+      );
     }
   };
 
@@ -100,5 +112,4 @@ const Page = (props: Props) => {
     </div>
   );
 };
-
 export default Page;
