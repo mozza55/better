@@ -35,7 +35,7 @@ const Page = (props: Props) => {
     record: '',
   });
   const isValidForm = useMemo(() => form.date && !isEmpty(form.condition) && !isEmpty(form.record), [form]);
-  const { mutate: createExerciseLog, isLoading } = useCreateExerciseLog();
+  const { mutate: createExerciseLog, isPending } = useCreateExerciseLog();
 
   const handleSaveClick = () => {
     if (isValidForm) {
