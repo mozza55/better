@@ -18,6 +18,7 @@ model User {
   updatedAt     DateTime  @updatedAt @map("updated_at")
   accounts      Account[]
   sessions      Session[]
+  exercise_log  ExerciseLog[]
 
   @@map("users")
 }
@@ -63,4 +64,18 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("verificationtokens")
+}
+
+model ExerciseLog {
+  id          Int       @id @default(autoincrement())
+  date        DateTime
+  condition   String
+  record      String    @db.Text
+  userId      Int       @map("user_id")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("exercise_log")
 }
