@@ -11,8 +11,8 @@ dayjs.extend(isBetweenPlugin);
 
 type Props = {
   selected?: Date;
-  onSelect?: (selectedDate: Date | undefined) => void;
-  onMonthChange?: (data: Date | undefined) => void;
+  onSelect?: (selectedDate: Date) => void;
+  onMonthChange?: (data: Date) => void;
 };
 
 const Calender = ({ selected, onSelect, onMonthChange }: Props) => {
