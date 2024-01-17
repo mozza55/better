@@ -10,13 +10,12 @@ import { isEmpty } from '@/utils/commonUtils';
 import 'dayjs/locale/ko';
 import TextareaAutosize from 'react-textarea-autosize';
 import { useCreateExerciseLog } from '@/queries/exercise-log/mutations';
+import { useQueryClient } from '@tanstack/react-query';
 
 dayjs.locale('ko');
 
 type Props = {
-  params: {
-    date?: Date;
-  };
+  searchParams: { date?: string };
 };
 
 const conditions = [
@@ -28,9 +27,10 @@ const conditions = [
 ];
 
 const Page = (props: Props) => {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const [form, setForm] = useState({
-    date: props.params.date || new Date(),
+    date: dayjs(props.searchParams.date).toDate(),
     condition: '',
     record: '',
   });
@@ -45,6 +45,7 @@ const Page = (props: Props) => {
         },
         {
           onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['getExerciseLogGroupByDate'] });
             router.push('/');
           },
         },

@@ -1,95 +1,60 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+import IconLogo from '@/assets/icons/icon_logo.svg';
+import dayjs from 'dayjs';
+import prisma from '@/lib/prisma';
+import { getServerSession } from 'next-auth';
+import authOptions from './api/auth/[...nextauth]/options';
+import HomeContainer from './_components/HomeContainer';
+import { ExerciseLog } from '@prisma/client';
 
-export default function Home() {
+async function getExerciseLog() {
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user?.id) {
+    return;
+  }
+  const startOfMonth = dayjs().startOf('month').toDate();
+  const endOfMonth = dayjs().endOf('month').toDate();
+
+  const res = await prisma.exerciseLog.findMany({
+    where: {
+      userId: Number(session.user.id),
+      date: {
+        gte: startOfMonth,
+        lte: endOfMonth,
+      },
+    },
+  });
+  const groupedData: Record<string, ExerciseLog[]> = {};
+  res.forEach((item) => {
+    const formattedDate = dayjs(item.date).format('YYYY-MM-DD');
+
+    // 그룹화된 객체에 해당 날짜의 배열이 없다면 빈 배열로 초기화
+    if (!groupedData[formattedDate]) {
+      groupedData[formattedDate] = [];
+    }
+
+    // 해당 날짜의 배열에 데이터 추가
+    groupedData[formattedDate].push(item);
+  });
+
+  // 그룹 내에서 시간 오름차순으로 정렬
+  Object.keys(groupedData).forEach((date) => {
+    groupedData[date].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  });
+
+  return groupedData;
+}
+
+export default async function Page() {
+  const data = await getExerciseLog();
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <main className="flex flex-col mh-screen">
+      <div>
+        <div className="w-52 py-4 px-3">
+          <IconLogo />
         </div>
       </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+      <HomeContainer initialData={data} />
     </main>
-  )
+  );
 }
