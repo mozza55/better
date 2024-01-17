@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .radio-group {
+    @apply flex gap-3 text-base flex-wrap;
+  }
+  .radio-btn {
+    @apply cursor-pointer py-2 px-4 bg-white rounded-3xl border-solid border-[1px] whitespace-nowrap text-[1rem] border-gray-200;
+  }
+  .radio-btn-checked {
+    @apply cursor-pointer py-2 px-4 bg-white rounded-3xl border-solid border-[1px] whitespace-nowrap border-teal-600 text-teal-600;
+  }
+}
+
+@layer base {
+  input[type='text'] {
+    @apply h-10 py-2 px-3 border rounded-md;
+  }
+  textarea {
+    @apply w-full py-2 px-3 border rounded-md bg-white resize-none;
+  }
+}
+input,
+textarea {
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
