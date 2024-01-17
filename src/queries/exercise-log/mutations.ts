@@ -1,7 +1,8 @@
 import { AxiosError } from 'axios';
-import { ExerciseLog, CreateExerciseLogVariables, UpdateExerciseLogVariables } from './types';
+import { CreateExerciseLogVariables, UpdateExerciseLogVariables } from './types';
 import { clientApi } from '../axios';
 import { UseMutationOptions, useMutation } from '@tanstack/react-query';
+import { ExerciseLog } from '@prisma/client';
 
 /**
  * 운동 기록 생성
@@ -31,6 +32,7 @@ const useUpdateExerciseLog = (options?: UseMutationOptions<ExerciseLog, AxiosErr
       });
       return data;
     },
+    ...options,
   });
 };
 

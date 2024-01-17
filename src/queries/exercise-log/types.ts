@@ -1,10 +1,9 @@
-export type ExerciseLog = {
-  id: string;
-  date: Date;
-  condition: string;
-  record: string;
-  userId: string;
-};
+import { ExerciseLog } from '@prisma/client';
 
-export type CreateExerciseLogVariables = Omit<ExerciseLog, 'userId' | 'id'>;
-export type UpdateExerciseLogVariables = Omit<ExerciseLog, 'userId'>;
+export type CreateExerciseLogVariables = Pick<ExerciseLog, 'date' | 'condition' | 'record'>;
+export type UpdateExerciseLogVariables = Pick<ExerciseLog, 'date' | 'condition' | 'record' | 'id'>;
+
+export type GetExerciseLogVariables = {
+  startDate?: string;
+  endDate?: string;
+};
