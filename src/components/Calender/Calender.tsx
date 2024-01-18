@@ -13,9 +13,10 @@ type Props = {
   selected?: Date;
   onSelect?: (selectedDate: Date) => void;
   onMonthChange?: (data: Date) => void;
+  active?: (date: Date) => boolean;
 };
 
-const Calender = ({ selected, onSelect, onMonthChange }: Props) => {
+const Calender = ({ selected, onSelect, onMonthChange, active: isActive }: Props) => {
   const weekdays = useMemo(() => {
     const start = dayjs().startOf('week');
     const days: Date[] = [];
@@ -94,7 +95,7 @@ const Calender = ({ selected, onSelect, onMonthChange }: Props) => {
                       onClick={(e) => onDayClick(date, e)}
                     >
                       <div className="w-10">
-                        <IconCircle fill="#F2F2F2" />
+                        <IconCircle fill={`${isActive && isActive(date) ? '#F1E78A' : '#F2F2F2'}`} />
                       </div>
                       <div>{dayjs(date).date()}</div>
                     </button>
