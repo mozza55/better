@@ -1,8 +1,7 @@
 'use client';
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Calender } from '@/components/Calender';
 import dayjs from 'dayjs';
-import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useGetExerciseLogGroupByDate } from '@/queries/exercise-log/queries';
 import { ExerciseLog } from '@prisma/client';
@@ -21,6 +20,17 @@ const HomeContainer = ({ initialData }: { initialData?: Record<string, ExerciseL
     },
   );
 
+  const isActive = useCallback(
+    (date: Date) => {
+      if (groupedExerciseLog) {
+        const days = Object.keys(groupedExerciseLog);
+        return days.includes(dayjs(date).format('YYYY-MM-DD'));
+      }
+      return false;
+    },
+    [groupedExerciseLog],
+  );
+
   const handleMonthChange = (date: Date) => {
     setFocusedDay(date);
   };
@@ -37,6 +47,7 @@ const HomeContainer = ({ initialData }: { initialData?: Record<string, ExerciseL
           onSelect={(date: Date) => {
             setFocusedDay(date);
           }}
+          active={isActive}
         />
       </div>
       <div className="w-full flex-grow  flex flex-col items-center justify-between gap-8 pt-6 pb-10 ">
@@ -54,14 +65,6 @@ const HomeContainer = ({ initialData }: { initialData?: Record<string, ExerciseL
         <button className="bg-slate-100 rounded-full py-3 px-6 " onClick={handleAddClick}>
           운동기록 추가하기
         </button>
-        {/* <button
-          className="bg-gray-100 rounded-full py-2 px-4"
-          onClick={async () => {
-            await signOut({ callbackUrl: '/auth/signin' });
-          }}
-        >
-          로그아웃
-        </button> */}
       </div>
     </>
   );
